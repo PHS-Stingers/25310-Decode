@@ -184,7 +184,7 @@ In `Constants.java`, adjust the OTOS offset:
 This compensates for the sensor not being at the robot's center.
 
 ### Step 3: Test Path Following
-Create a simple test autonomous with a known path and verify the robot follows it accurately.
+qCreate a simple test autonomous with a known path and verify the robot follows it accurately.
 
 ## Common Patterns
 
@@ -192,7 +192,7 @@ Create a simple test autonomous with a known path and verify the robot follows i
 ```java
 // Drive to scoring position
 Pose scoringPose = new Pose(24, 0, 0);
-robot.follower.followPath(new BezierLine(startPose, scoringPose));
+robot.follower.followPath(new B[Constants.java](TeamCode%2Fsrc%2Fmain%2Fjava%2Forg%2Ffirstinspires%2Fftc%2Fteamcode%2FpedroPathing%2FConstants.java)ezierLine(startPose, scoringPose));
 waitForPath();
 
 // Score
