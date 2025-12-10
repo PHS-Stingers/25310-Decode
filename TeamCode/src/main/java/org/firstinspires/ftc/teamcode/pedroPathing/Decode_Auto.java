@@ -8,7 +8,6 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.Poses.startP
 import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.Paths;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.createFollower;
 
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
@@ -29,9 +28,6 @@ public class Decode_Auto extends LinearOpMode {
     private int pathState;
     private DcMotor intake;
     private DcMotor flyWheel;
-public static class shoot(double shooterPower) {
-
-}
 
 
 
@@ -39,76 +35,108 @@ public static class shoot(double shooterPower) {
 
 
 
+
+
+    // In Decode_Auto.java
 
     public void runOpMode() {
-        // Initialize the follower. This is a crucial first step.
-        // Make sure your hardware is mapped correctly in your Follower's constructor if needed.
+        // Initialize the follower and hardware
         follower = createFollower(hardwareMap);
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        flyWheel = hardwareMap.get(DcMotor.class, "Output"); // Uncomment when ready
 
-        // Set the robot's starting position.
-
-
-        // Now that the follower is initialized, create an instance of your Paths class.
-        // This will build all 8 of your paths.
+        // Build all paths from the Paths class
         Paths paths = new Paths(follower);
 
-        // Wait for the start button to be pressed on the Driver Station.
+        telemetry.addData("Status", "Initialization Complete");
+        telemetry.update();
+
+        // Wait for the start button to be pressed
         waitForStart();
 
-        // The OpMode is now running.
         if (opModeIsActive()) {
-            // Follow each path in numerical order.
-            // The 'follower.followPath()' method is blocking, meaning it will wait
-            // until the path is complete before moving to the next line.
-
-            telemetry.addData("Status", "Following Path 1");
+            // Path 1: Moves from starting position (56, 10) to the back scoring position (70, 20).
+            telemetry.addData("Status", "Following Path 1 to Back Score Position");
             telemetry.update();
             follower.followPath(paths.Path1);
 
+            // Action: Score pre-loaded artifacts on the goal.
+            // (Shooter/placing code to be added here)
 
-            telemetry.addData("Status", "Following Path 2");
+            // Path 2: Moves from the back scoring position (70, 20) to the far-side pickup area (40, 85).
+            telemetry.addData("Status", "Following Path 2 to Far Pickup Area");
             telemetry.update();
             follower.followPath(paths.Path2);
 
-           // MecanumConstants.maxPower(0.5);
-            telemetry.addData("Status", "Following Pickup 1");
+            // Action: Start intake to pick up artifacts.
+            telemetry.addData("Status", "Running Intake");
+            telemetry.update();
+            intake.setPower(1.0);
+
+            // Path Pickup 1: Strafes left (to 25, 85) to secure the artifacts.
+            telemetry.addData("Status", "Following Pickup Path 1");
             telemetry.update();
             follower.followPath(paths.PathPickup1);
-            //MecanumConstants.maxPower(1);
+            intake.setPower(0.0); // Stop intake after pickup.
 
-            telemetry.addData("Status", "Following Path 3");
+            // Path 3: Moves from the pickup spot (25, 85) to the front scoring position (59, 92).
+            telemetry.addData("Status", "Following Path 3 to Front Score Position");
             telemetry.update();
             follower.followPath(paths.Path3);
 
-            telemetry.addData("Status", "Following Path 4");
+            // Action: Score the picked-up artifacts on the goal.
+            // (Shooter/placing code to be added here)
+
+            // Path 4: Moves from the front scoring position (59, 92) to the middle pickup area (40, 60).
+            telemetry.addData("Status", "Following Path 4 to Middle Pickup Area");
             telemetry.update();
             follower.followPath(paths.Path4);
 
-           // MecanumConstants.maxPower(0.5);
-            telemetry.addData("Status", "Following Pickup 2");
+            // Action: Start intake to pick up artifacts.
+            telemetry.addData("Status", "Running Intake");
+            telemetry.update();
+            intake.setPower(1.0);
+
+            // Path Pickup 2: Strafes left (to 25, 60) to secure the artifacts.
+            telemetry.addData("Status", "Following Pickup Path 2");
             telemetry.update();
             follower.followPath(paths.PathPickup2);
-            //MecanumConstants.maxPower(1);
+            intake.setPower(0.0); // Stop intake after pickup.
 
-            telemetry.addData("Status", "Following Path 5");
+            // Path 5: Moves from the pickup spot (25, 60) back to the front scoring position (59, 92).
+            telemetry.addData("Status", "Following Path 5 to Front Score Position");
             telemetry.update();
             follower.followPath(paths.Path5);
 
-            telemetry.addData("Status", "Following Path 6");
+            // Action: Score the picked-up artifacts on the goal.
+            // (Shooter/placing code to be added here)
+
+            // Path 6: Moves from the front scoring position (59, 92) to the near-side pickup area (40, 35).
+            telemetry.addData("Status", "Following Path 6 to Near Pickup Area");
             telemetry.update();
             follower.followPath(paths.Path6);
 
-            //MecanumConstants.maxPower(0.5);
-            telemetry.addData("Status", "Following Pickup 3");
+            // Action: Start intake to pick up artifacts.
+            telemetry.addData("Status", "Running Intake");
+            telemetry.update();
+            intake.setPower(1.0);
+
+            // Path Pickup 3: Strafes left (to 25, 35) to secure the artifacts.
+            telemetry.addData("Status", "Following Pickup Path 3");
             telemetry.update();
             follower.followPath(paths.PathPickup3);
-            //MecanumConstants.maxPower(1);
+            intake.setPower(0.0); // Stop intake after pickup.
 
-            telemetry.addData("Status", "Following Path 7");
+            // Path 7: Moves from the pickup spot (25, 35) back to the front scoring position (59, 92).
+            telemetry.addData("Status", "Following Path 7 to Front Score Position");
             telemetry.update();
             follower.followPath(paths.Path7);
 
-            telemetry.addData("Status", "Following Path 8");
+            // Action: Score the picked-up artifacts on the goal.
+            // (Shooter/placing code to be added here)
+
+            // Path 8: Moves from the front scoring position (59, 92) to the parking area (20, 70).
+            telemetry.addData("Status", "Following Path 8 to Park");
             telemetry.update();
             follower.followPath(paths.Path8);
 
