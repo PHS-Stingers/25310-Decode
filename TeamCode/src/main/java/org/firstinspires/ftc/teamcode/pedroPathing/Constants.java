@@ -135,7 +135,7 @@ public class Constants {
         public static final Pose pickup1Pose = new Pose(39,35, Math.toRadians(180));
         public static final Pose pickup2Pose = new Pose(39, 60, Math.toRadians(180));
         public static final Pose pickup3Pose = new Pose(39, 85, Math.toRadians(180));
-        public static final Pose frontScorePose = new Pose(51, 92, Math.toRadians(135));
+        public static final Pose frontScorePose = new Pose(59, 92, Math.toRadians(135));
         public static final Pose GatePose = new Pose(20, 70, Math.toRadians(180));
     }
     public static MecanumConstants driveConstants = new MecanumConstants()
