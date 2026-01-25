@@ -22,6 +22,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class Constants {
 
+    // ===== DRIVETRAIN POWER SCALE =====
+    public static final double PowerScale = 1;  // Scales all mecanum motor outputs to 70%
+    public static final double RotationalPowerScale = PowerScale * 0.75;  // Rotation speed at 50% of PowerScale
+
     public static class Paths {
 
         public PathChain Path1;
@@ -64,7 +68,7 @@ public class Constants {
             Path3 = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(25.000, 85.000), new Pose(59.000, 92.000))
+                            new BezierLine(new Pose(25.000, 85.000), new Pose(47.000, 95.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(45))
                     .build();
@@ -88,7 +92,7 @@ public class Constants {
             Path5 = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(25.000, 60.000), new Pose(59.000, 92.000))
+                            new BezierLine(new Pose(25.000, 60.000), new Pose(47.000, 95.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(45))
                     .build();
@@ -113,7 +117,7 @@ public class Constants {
             Path7 = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(25.000, 35.000), new Pose(59.000, 92.000))
+                            new BezierLine(new Pose(25.000, 35.000), new Pose(47.000, 95.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(45))
                     .build();
@@ -135,14 +139,14 @@ public class Constants {
         public static final Pose pickup1Pose = new Pose(39,35, Math.toRadians(180));
         public static final Pose pickup2Pose = new Pose(39, 60, Math.toRadians(180));
         public static final Pose pickup3Pose = new Pose(39, 85, Math.toRadians(180));
-        public static final Pose frontScorePose = new Pose(59, 92, Math.toRadians(135));
+        public static final Pose frontScorePose = new Pose(47, 95, Math.toRadians(135));
         public static final Pose GatePose = new Pose(20, 70, Math.toRadians(180));
     }
     public static MecanumConstants driveConstants = new MecanumConstants()
             .maxPower(1)
             .rightFrontMotorName("rightFront")
             .rightRearMotorName("rightRear")
-            .leftRearMotorName("leftBack")
+            .leftRearMotorName("leftRear")
             .leftFrontMotorName("leftFront")
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)

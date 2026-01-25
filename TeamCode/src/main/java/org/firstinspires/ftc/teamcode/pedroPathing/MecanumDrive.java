@@ -24,6 +24,14 @@ public class MecanumDrive {
         // Reverse the left-side motors so they spin in the correct direction
         frontLeft.setDirection(DcMotorEx.Direction.REVERSE);
         backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontRight.setDirection(DcMotorEx.Direction.REVERSE);
+        backRight.setDirection(DcMotorEx.Direction.REVERSE);
+
+        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
@@ -37,6 +45,8 @@ public class MecanumDrive {
         y = -y;
         // This factor can be used to counteract imperfect strafing
         x = x * 1.1;
+        // Apply rotational power scale to rotation input
+        rx = rx * Constants.RotationalPowerScale / Constants.PowerScale;
 
         // Calculate the power for each wheel
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -45,10 +55,10 @@ public class MecanumDrive {
         double frontRightPower = (y - x - rx) / denominator;
         double backRightPower = (y + x - rx) / denominator;
 
-        // Set the power to the motors
-        frontLeft.setPower(frontLeftPower);
-        backLeft.setPower(backLeftPower);
-        frontRight.setPower(frontRightPower);
-        backRight.setPower(backRightPower);
+        // Apply PowerScale from Constants to all motor outputs
+        frontLeft.setPower(frontLeftPower * Constants.PowerScale);
+        backLeft.setPower(backLeftPower * Constants.PowerScale);
+        frontRight.setPower(frontRightPower * Constants.PowerScale);
+        backRight.setPower(backRightPower * Constants.PowerScale);
     }
 }
