@@ -16,37 +16,55 @@ import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx; // Added to access getVelocity()
 
 
 @Autonomous(name = "Decode Auto", group = "Competition")
 public class Decode_Auto extends LinearOpMode {
 
 
-
+    private DcMotor intake;
+    private DcMotorEx flyWheel; // use DcMotorEx so getVelocity() is available
+    private Servo feeder;
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
     private int pathState;
-    private DcMotor intake;
-    private DcMotor flyWheel;
 
 
+    public void shoot(double targetRPM) {
+        // Set flywheel to run using encoder
+        flyWheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        // Calculate target velocity (ticks per second)
+        double ticksPerRevolution = flyWheel.getMotorType().getTicksPerRev();
+        double targetVelocity = (targetRPM / 60.0) * ticksPerRevolution;
+
+        // Spin up flywheel
+        flyWheel.setPower(1.0);
+
+        // Wait until flywheel reaches target speed (within 5% tolerance)
+        while (opModeIsActive() && Math.abs(flyWheel.getVelocity() - targetVelocity) > targetVelocity * 0.05) {
+            telemetry.addData("Current RPM", (flyWheel.getVelocity() / ticksPerRevolution) * 60);
+            telemetry.addData("Target RPM", targetRPM);
+            telemetry.update();
+        }
 
 
-
-
-
-
-
-    // In Decode_Auto.java
-
-    public void runOpMode() {
+        // In Decode_Auto.java
+    }
+    @Override
+    public void runOpMode () {
         // Initialize the follower and hardware
         follower = createFollower(hardwareMap);
-        intake = hardwareMap.get(DcMotor.class, "intake");
-        flyWheel = hardwareMap.get(DcMotor.class, "Output"); // Uncomment when ready
+        intake = hardwareMap.get(DcMotorEx.class, "intake");
+        flyWheel = hardwareMap.get(DcMotorEx.class, "Output"); // Uncomment when ready
 
         // Build all paths from the Paths class
         Paths paths = new Paths(follower);
+        flyWheel = hardwareMap.get(DcMotorEx.class, "flyWheel"); // use DcMotorEx.class
+        feeder = hardwareMap.get(Servo.class, "feeder");
 
         telemetry.addData("Status", "Initialization Complete");
         telemetry.update();
@@ -146,11 +164,5 @@ public class Decode_Auto extends LinearOpMode {
     }
 
 
-
-
-    }
-
-
-
-
+}
 
