@@ -157,7 +157,7 @@ public class Constants {
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
     public static OTOSConstants localizerConstants = new OTOSConstants()
             .hardwareMapName("otos")
-            .linearUnit(DistanceUnit.CM)
+            .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.DEGREES)
             .offset(new SparkFunOTOS.Pose2D(0,-170,90));
     public static Follower createFollower(HardwareMap hardwareMap) {

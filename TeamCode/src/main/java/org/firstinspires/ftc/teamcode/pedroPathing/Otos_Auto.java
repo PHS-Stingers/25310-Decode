@@ -31,24 +31,24 @@ public class Otos_Auto extends LinearOpMode {
 
     // ===================== POSITION VARIABLES (EDITABLE) =====================
     // Position 1: Starting position for shooting
-    private double POS1_X = 72.0;
-    private double POS1_Y = 72.0;
+    private double POS1_X = 50.0;
+    private double POS1_Y = 94.0;
 
     // Position 2: First pickup location
-    private double POS2_X = 20.0;
-    private double POS2_Y = 50.0;
+    private double POS2_X = 50.0;
+    private double POS2_Y = 84.0;
 
     // Position 3: Intermediate position between 2 and 1
-    private double POS3_X = 45.0;
-    private double POS3_Y = 60.0;
+    private double POS3_X = 22.0;
+    private double POS3_Y = 84.0;
 
     // Position 4: Second pickup location
-    private double POS4_X = 20.0;
-    private double POS4_Y = 80.0;
+    private double POS4_X = 50.0;
+    private double POS4_Y = 60.0;
 
     // Position 5: Intermediate position between 4 and 1
-    private double POS5_X = 45.0;
-    private double POS5_Y = 75.0;
+    private double POS5_X = 22.0;
+    private double POS5_Y = 60.0;
 
     // Position 6: Reserved for future use
     private double POS6_X = 0.0;
@@ -136,7 +136,7 @@ public class Otos_Auto extends LinearOpMode {
             otos.calibrateImu();
 
             // Set starting position
-            otos.setPosition(new SparkFunOTOS.Pose2D(0, 0, 0));
+            otos.setPosition(new SparkFunOTOS.Pose2D(15, 111, 0));
 
             telemetry.addData("OTOS", "Initialized Successfully");
         } else {
