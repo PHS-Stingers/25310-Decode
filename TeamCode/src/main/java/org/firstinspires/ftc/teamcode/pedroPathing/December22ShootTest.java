@@ -19,9 +19,9 @@ public class December22ShootTest extends LinearOpMode {
     private static final double FRONT_SHOOT_RPM = 3000;
     private static final double BACK_SHOOT_RPM = 4500;
 
-    // ===== GATE SERVO POSITIONS (normalized 0-1) - SERVO DISABLED =====
-    // private static final double GATE_CLOSED_POSITION = 1.0;    // 180 degrees
-    // private static final double GATE_OPEN_POSITION = 140.0 / 180.0;    // 140 degrees (approx 0.778)
+     //===== GATE SERVO POSITIONS (normalized 0-1) - SERVO DISABLED =====
+     private static final double GATE_CLOSED_POSITION = 0.5;    // 180 degrees
+     private static final double GATE_OPEN_POSITION = 140.0 / 180.0;    // 140 degrees (approx 0.778)
 
     // ===== FLYWHEEL SPEED VALIDATION =====
     private static final double RPM_TOLERANCE = 200;  // RPM tolerance for speed validation
@@ -31,7 +31,9 @@ public class December22ShootTest extends LinearOpMode {
     // ===== HARDWARE DECLARATIONS =====
     private DcMotor intake;
     private DcMotorEx flywheel;
-    // private Servo gate;  // SERVO DISABLED - NOT USED IN THIS TEST
+
+    private Servo gate;  // SERVO DISABLED - NOT USED IN THIS TEST
+
     private Follower follower;
     private MecanumDrive drive;
 
@@ -150,6 +152,12 @@ public class December22ShootTest extends LinearOpMode {
             else {
                 // --- Flywheel Control (No Gate) ---
                 handleFlywheelOnly();
+            }
+            if (gamepad1.dpad_left) {
+                gate.setPosition(90);
+            }
+               else if (gamepad1.dpad_right) {
+                gate.setPosition(0);
             }
 
             // --- Telemetry ---

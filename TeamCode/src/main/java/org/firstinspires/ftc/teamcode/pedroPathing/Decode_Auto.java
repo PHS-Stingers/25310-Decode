@@ -2,22 +2,18 @@ package org.firstinspires.ftc.teamcode.pedroPathing;
 
 
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.Poses.startPose;
 //import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.MecanumConstants;
 
 import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.Paths;
 import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.createFollower;
 
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierLine;
-import com.pedropathing.geometry.Pose;
-import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
+        import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
+        import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotorEx; // Added to access getVelocity()
 
 
