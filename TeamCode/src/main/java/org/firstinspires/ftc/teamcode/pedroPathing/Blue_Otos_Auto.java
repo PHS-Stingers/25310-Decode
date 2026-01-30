@@ -20,7 +20,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  * @version 1.0, 2026
  */
 @Autonomous(name = "OTOS Auto", group = "Competition")
-public class Otos_Auto extends LinearOpMode {
+public class Blue_Otos_Auto extends LinearOpMode {
 
     // ===================== HARDWARE OBJECTS =====================
     private SparkFunOTOS otos;
@@ -68,6 +68,9 @@ public class Otos_Auto extends LinearOpMode {
     // ===================== OTOS CONSTANTS =====================
     private double OTOS_TOLERANCE = 2.0; // inches
     private static final String OTOS_NAME = "otos";
+
+    // Simple proportional gain for heading correction when a target heading is provided
+    private static final double HEADING_KP = 0.02;
 
     // ===================== STATE VARIABLES =====================
     private boolean flywheelAtSpeed = false;
@@ -136,9 +139,10 @@ public class Otos_Auto extends LinearOpMode {
             otos.calibrateImu();
 
             // Set starting position
-            otos.setPosition(new SparkFunOTOS.Pose2D(15, 111, 0));
 
-            telemetry.addData("OTOS", "Initialized Successfully");
+            // Start heading set to 90 as requested
+            otos.setPosition(new SparkFunOTOS.Pose2D(15, 111, 90));
+            telemetry.addData("OTOS", "Initialized Successfully (start heading 90)");
         } else {
             telemetry.addData("OTOS", "Failed to Initialize");
         }
@@ -149,20 +153,21 @@ public class Otos_Auto extends LinearOpMode {
      * Main autonomous routine
      */
     private void executeAutonomous() {
-        // Cycle 1: Pos 0 -> Pos 1 -> Shoot
-        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED);
+        // Cycle 1: Start -> Shoot (shoot heading = 142)
+        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED, 142);
         shootSequence();
 
-        // Cycle 2: Pos 1 -> Pos 2 -> Pos 3 -> Pos 1 -> Shoot
-        moveToPosition(POS2_X, POS2_Y, DRIVE_SPEED);
-        moveToPosition(POS3_X, POS3_Y, SLOW_DRIVE_SPEED, true); // Intake on, slow drive
-        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED);
+        // Cycle 2: Shoot -> Intake 1 -> Shoot
+        // Approach pickup (heading 180), intake pose (heading 180), return to shoot (heading 142)
+        moveToPosition(POS2_X, POS2_Y, DRIVE_SPEED, 180);
+        moveToPosition(POS3_X, POS3_Y, SLOW_DRIVE_SPEED, true, 180);
+        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED, 142);
         shootSequence();
 
-        // Cycle 3: Pos 1 -> Pos 4 -> Pos 5 -> Pos 1 -> Shoot
-        moveToPosition(POS4_X, POS4_Y, DRIVE_SPEED);
-        moveToPosition(POS5_X, POS5_Y, SLOW_DRIVE_SPEED, true); // Intake on, slow drive
-        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED);
+        // Cycle 3: Shoot -> Intake 2 -> Shoot
+        moveToPosition(POS4_X, POS4_Y, DRIVE_SPEED, 180);
+        moveToPosition(POS5_X, POS5_Y, SLOW_DRIVE_SPEED, true, 180);
+        moveToPosition(POS1_X, POS1_Y, DRIVE_SPEED, 142);
         shootSequence();
 
         telemetry.addData("Status", "Autonomous Complete");
@@ -170,26 +175,32 @@ public class Otos_Auto extends LinearOpMode {
     }
 
     /**
-     * Move robot to a specific position using OTOS sensor feedback
-     * Pseudo code: Drive(x,y) until otos x == val and otos y == val
+     * Move robot to a specific position using OTOS sensor feedback.
+     * There are overloads that accept an optional target heading. If a heading is
+     * provided, the robot will apply a small P-control to correct heading while
+     * translating toward the target.
      *
      * @param targetX Target X position in inches
      * @param targetY Target Y position in inches
      * @param driveSpeed Power level for motors (0.0 - 1.0)
      */
     private void moveToPosition(double targetX, double targetY, double driveSpeed) {
-        moveToPosition(targetX, targetY, driveSpeed, false);
+        moveToPosition(targetX, targetY, driveSpeed, false, Double.NaN);
+    }
+
+    private void moveToPosition(double targetX, double targetY, double driveSpeed, double targetHeading) {
+        moveToPosition(targetX, targetY, driveSpeed, false, targetHeading);
+    }
+
+    private void moveToPosition(double targetX, double targetY, double driveSpeed, boolean startIntake) {
+        moveToPosition(targetX, targetY, driveSpeed, startIntake, Double.NaN);
     }
 
     /**
-     * Move robot to a specific position with optional intake
-     *
-     * @param targetX Target X position in inches
-     * @param targetY Target Y position in inches
-     * @param driveSpeed Power level for motors (0.0 - 1.0)
-     * @param startIntake Whether to start the intake motor during movement
+     * Full movement routine: optional intake and optional target heading.
+     * If targetHeading is NaN, heading control is ignored.
      */
-    private void moveToPosition(double targetX, double targetY, double driveSpeed, boolean startIntake) {
+    private void moveToPosition(double targetX, double targetY, double driveSpeed, boolean startIntake, double targetHeading) {
         if (startIntake) {
             intake.setPower(INTAKE_SPEED);
         }
@@ -201,7 +212,7 @@ public class Otos_Auto extends LinearOpMode {
             double currentX = currentPos.x;
             double currentY = currentPos.y;
 
-            // Calculate error
+            // Translational error
             double errorX = targetX - currentX;
             double errorY = targetY - currentY;
 
@@ -209,21 +220,39 @@ public class Otos_Auto extends LinearOpMode {
             if (Math.abs(errorX) < OTOS_TOLERANCE && Math.abs(errorY) < OTOS_TOLERANCE) {
                 reachedTarget = true;
                 stopDriveMotors();
-            } else {
-                // Calculate direction and drive
-                double distance = Math.sqrt(errorX * errorX + errorY * errorY);
-                double directionX = errorX / distance;
-                double directionY = errorY / distance;
-
-                // Drive toward target
-                driveRobot(directionY * driveSpeed, directionX * driveSpeed, 0);
+                break;
             }
 
-            // Update telemetry
+            double distance = Math.sqrt(errorX * errorX + errorY * errorY);
+            double directionX = errorX / distance;
+            double directionY = errorY / distance;
+
+            // Heading correction (if requested)
+            double rotate = 0.0;
+            if (!Double.isNaN(targetHeading)) {
+                double currentHeading = currentPos.heading;
+                double headingError = normalizeAngle(targetHeading - currentHeading);
+                rotate = headingError * HEADING_KP;
+                rotate = Math.max(Math.min(rotate, 1.0), -1.0);
+            }
+
+            // Drive toward target with optional heading correction
+            driveRobot(directionY * driveSpeed, directionX * driveSpeed, rotate);
+
+            // Telemetry + cooperative multitasking
             updateTelemetry(currentX, currentY, targetX, targetY);
+            idle();
         }
 
         stopDriveMotors();
+        if (startIntake) intake.setPower(0);
+    }
+
+    private double normalizeAngle(double angle) {
+        double a = angle % 360.0;
+        if (a > 180.0) a -= 360.0;
+        if (a <= -180.0) a += 360.0;
+        return a;
     }
 
     /**
