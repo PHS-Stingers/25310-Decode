@@ -230,7 +230,7 @@ public class Blue_Otos_Auto extends LinearOpMode {
             // Heading correction (if requested)
             double rotate = 0.0;
             if (!Double.isNaN(targetHeading)) {
-                double currentHeading = currentPos.heading;
+                double currentHeading = currentPos.h;
                 double headingError = normalizeAngle(targetHeading - currentHeading);
                 rotate = headingError * HEADING_KP;
                 rotate = Math.max(Math.min(rotate, 1.0), -1.0);
