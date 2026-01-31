@@ -56,7 +56,7 @@ public class Decode_Minimal_Shoot_Auto extends LinearOpMode {
 
         waitForStart();
         flywheel.setPower(1);
-        drive(1, 0, 0);
+        drive(-1, 0, 0);
         sleep(1500);
         gate.setPosition(150);
         intake.setPower(1);
