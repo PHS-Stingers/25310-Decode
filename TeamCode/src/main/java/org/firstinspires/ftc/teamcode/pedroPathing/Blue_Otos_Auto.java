@@ -34,7 +34,7 @@ public class Blue_Otos_Auto extends LinearOpMode {
     private double POS1_X = 50.0;
     private double POS1_Y = 94.0;
 
-    private double HeadPos_X1 = 
+    private double HeadPos_X1 = 50.0;
 
     // Position 2: First pickup location
     private double POS2_X = 50.0;

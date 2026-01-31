@@ -71,7 +71,7 @@ public class December22ShootTest extends LinearOpMode {
         flywheel = hardwareMap.get(DcMotorEx.class, "output");
 
         // // SERVO GATE INITIALIZATION DISABLED - NOT USED IN THIS TEST
-        // gate = hardwareMap.get(Servo.class, "Gate");
+        gate = hardwareMap.get(Servo.class, "gate");
 
         // Set the direction of the intake motor if needed.
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -85,7 +85,7 @@ public class December22ShootTest extends LinearOpMode {
         flywheelMaxRPM = flywheel.getMotorType().getMaxRPM();
 
         // // SERVO GATE CLOSED POSITION INITIALIZATION DISABLED - NOT USED IN THIS TEST
-        // gate.setPosition(GATE_CLOSED_POSITION);
+        gate.setPosition(GATE_CLOSED_POSITION);
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("Note", "Servo gate disabled for testing");
@@ -146,7 +146,8 @@ public class December22ShootTest extends LinearOpMode {
             }
             // Priority 2: Right Bumper - Reverse at 0.5 power
             else if (gamepad1.right_bumper) {
-                flywheel.setPower(-0.5);  // Reverse at 0.5 power
+                flywheel.setPower(-0.75);  // Reverse at 1 power
+                intake.setPower(-1);    // reverse at 1 power
             }
             // Priority 3: Left Bumper, Left Trigger, or normal RPM control
             else {
@@ -191,7 +192,7 @@ public class December22ShootTest extends LinearOpMode {
             }
 
             telemetry.addData("Flywheel Velocity (ticks/sec)", flywheel.getVelocity());
-            // telemetry.addData("Gate Position", gate.getPosition());  // GATE DISABLED
+            telemetry.addData("Gate Position", gate.getPosition());  // GATE DISABLED
             telemetry.addData("Robot X", follower.getPose().getX());
             telemetry.addData("Robot Y", follower.getPose().getY());
             telemetry.update();
