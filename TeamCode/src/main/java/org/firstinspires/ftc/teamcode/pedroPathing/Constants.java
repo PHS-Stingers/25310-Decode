@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 public class Constants {
 
     // ===== DRIVETRAIN POWER SCALE =====
-    public static final double PowerScale = .75;  // Scales all mecanum motor outputs to 70%
+    public static final double PowerScale = 1;  // Scales all mecanum motor outputs to 70%
     public static final double RotationalPowerScale = PowerScale * 0.70;  // Rotation speed at 70% of PowerScale
 
     public static class Paths {
