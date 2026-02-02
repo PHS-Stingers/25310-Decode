@@ -126,6 +126,7 @@ public class December22ShootTest extends LinearOpMode {
                         targetFlywheelRPM = BACK_SHOOT_RPM;
                     }
                 }
+                flywheel.setPower(1);
             }
 
             // --- Update Follower (PedroPathing)
