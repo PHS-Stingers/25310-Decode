@@ -9,6 +9,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.hardware.dfrobot.HuskyLens;
+
+import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+
+import java.util.concurrent.TimeUnit;
 
 @TeleOp(name = "December22 Shoot Test", group = "Testing")
 public class December22ShootTest_FreeSpin extends LinearOpMode {
@@ -27,6 +32,11 @@ public class December22ShootTest_FreeSpin extends LinearOpMode {
     private static final double POSITION_TOLERANCE_INCHES = 3.0;  // Position tolerance
 
     // ===== HARDWARE DECLARATIONS =====
+
+    private final int READ_PERIOD = 1;
+
+    private HuskyLens huskyLens;
+
     private DcMotor intake;
     private DcMotorEx flywheel;
 
@@ -36,6 +46,9 @@ public class December22ShootTest_FreeSpin extends LinearOpMode {
     private MecanumDrive drive;
 
     // ===== SHOOTING SYSTEM STATE VARIABLES =====
+
+    private double maxPixel = 50;
+    private double intakeScale = 0;
     private double targetFlywheelRPM = 0;
     private double flywheelMaxRPM = 0;
     private boolean isMaxMode = false;
@@ -49,12 +62,23 @@ public class December22ShootTest_FreeSpin extends LinearOpMode {
 
     // ===== ENUM FOR SHOOT POSITIONS =====
     private enum ShootPosition {
-        NONE, FRONT, BACK, TEST
+        NONE, FRONT, BACK
     }
 
     @Override
     public void runOpMode() {
         // --- INITIALIZATION PHASE ---
+        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
+        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
+        rateLimit.expire();
+
+        if (!huskyLens.knock()) {
+            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+        } else {
+            telemetry.addData(">>", "Press start to continue");
+        }
+
+        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
 
         // Initialize the MecanumDrive object. This will map and configure all drive motors.
         drive = new MecanumDrive(hardwareMap);
@@ -94,72 +118,95 @@ public class December22ShootTest_FreeSpin extends LinearOpMode {
 
         // --- TELEOP LOOP ---
         while (opModeIsActive()) {
-            flywheel.setPower(1);
-            // --- Drive Train Control ---
-            double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
-            double rx = gamepad1.right_stick_x;
 
-            // Call the drive method from our MecanumDrive class
-            drive.drive(y, x, rx);
-
-
-
-            // --- Max RPM Mode: press and hold Left Bumper to run at motor max RPM ---
-            if (gamepad1.left_bumper) {
-
-                currentShootPosition = ShootPosition.TEST;
+            if (!rateLimit.hasExpired()) {
+                continue;
             }
+            rateLimit.reset();
+
+            HuskyLens.Block[] blocks = huskyLens.blocks();
+            telemetry.addData("Block count", blocks.length);
+            for (HuskyLens.Block block : blocks) {
+                telemetry.addData("Block", block.toString());
 
 
-            // --- Update Follower (PedroPathing)
-            follower.update();
-            // updateRobotPosition();  // COMMENTED OUT - POSITION TRACKING NOT NEEDED
+                flywheel.setPower(1);
+                // --- Drive Train Control ---
+                double y = gamepad1.left_stick_y;
+                double x = gamepad1.left_stick_x;
+                double rx = gamepad1.right_stick_x;
 
-            // --- Intake Control ---
-            if (gamepad1.right_trigger > 0.1) {
-                intake.setPower(1.0);
-            } else {
-                intake.setPower(0.0);
+                // Call the drive method from our MecanumDrive class
+                drive.drive(y, x, rx);
+
+
+                // --- Align Robot based on huskylens ---
+                if (gamepad1.left_bumper) {
+                    if (block.id != 0) {
+                        if (block.x > 215) {
+                            //STRAFE LEFT until  blocks[i].x between 205 and 215
+                            drive.drive(0, -1, 0);
+                        } else if (block.x < 205) {
+                            //STRAFE RIGHT until blocks[i].x between 205 and 215
+                            drive.drive(0, 1, 0);
+                        }
+
+                    } else if (block.id == 2) {
+                        if (block.x > 215) {
+                            //STRAFE LEFT until  blocks[i].x between 205 and 215
+                            drive.drive(0, 1, 0);
+                        } else if (block.x < 205) {
+                            //STRAFE RIGHT until blocks[i].x between 205 and 215
+                            drive.drive(0, -1, 0);
+                        }
+
+                    }
+
+                }
+
+
+                // --- Update Follower (PedroPathing)
+                follower.update();
+                // updateRobotPosition();  // COMMENTED OUT - POSITION TRACKING NOT NEEDED
+
+                // --- Intake Control ---
+                if (gamepad1.right_trigger > 0.1) {
+                    intake.setPower(1.0);
+                } else {
+                    intake.setPower(0.0);
+                }
+
+                // --- Flywheel Control Priority System ---
+                // Priority 1: D-Pad Down - Run at 100% full power
+                if (gamepad1.dpad_down) {
+                    flywheel.setPower(1.0);  // Full power (100%)
+                }
+                // Priority 2: Right Bumper - Reverse at 0.5 power
+                else if (gamepad1.right_bumper) {
+                    flywheel.setPower(-0.75);  // Reverse at 1 power
+                    intake.setPower(-1);    // reverse at 1 power
+                }
+
+
+                if (gamepad1.dpad_left) {
+                    gate.setPosition(90);
+                } else if (gamepad1.dpad_right) {
+                    gate.setPosition(0);
+                }
+
+
+                // --- Telemetry ---
+
+
+                telemetry.addData("Left Stick Y", y);
+                telemetry.addData("Left Stick X", x);
+                telemetry.addData("Right Stick X", rx);
+
+                telemetry.addData("Gate Position", gate.getPosition());  // GATE DISABLED
+                telemetry.addData("Robot X", follower.getPose().getX());
+                telemetry.addData("Robot Y", follower.getPose().getY());
+                telemetry.update();
             }
-
-            // --- Flywheel Control Priority System ---
-            // Priority 1: D-Pad Down - Run at 100% full power
-            if (gamepad1.dpad_down) {
-                flywheel.setPower(1.0);  // Full power (100%)
-            }
-            // Priority 2: Right Bumper - Reverse at 0.5 power
-            else if (gamepad1.right_bumper) {
-                flywheel.setPower(-0.75);  // Reverse at 1 power
-                intake.setPower(-1);    // reverse at 1 power
-            }
-
-
-            if (gamepad1.dpad_left) {
-                gate.setPosition(90);
-            }
-               else if (gamepad1.dpad_right) {
-                gate.setPosition(0);
-            }
-
-            // --- Telemetry ---
-
-
-            telemetry.addData("Status", "TeleOp Running - Shoot Test Mode");
-            telemetry.addData("Left Trigger Value", gamepad1.left_trigger);
-            telemetry.addData("Left Stick Y", y);
-            telemetry.addData("Left Stick X", x);
-            telemetry.addData("Right Stick X", rx);
-
-
-            // When D-Pad Down is pressed, show detailed flywheel capacity info
-
-
-            telemetry.addData("Flywheel Velocity (ticks/sec)", flywheel.getVelocity());
-            telemetry.addData("Gate Position", gate.getPosition());  // GATE DISABLED
-            telemetry.addData("Robot X", follower.getPose().getX());
-            telemetry.addData("Robot Y", follower.getPose().getY());
-            telemetry.update();
         }
     }
 
