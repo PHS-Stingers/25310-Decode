@@ -4,6 +4,38 @@
 
 The system implements **constant-time point-in-triangle detection** combined with **proportional heading control** for FTC robot localization and automated target acquisition within bounded game field coordinates (0,0 to 144,144).
 
+## Current Configuration
+
+### Default Triangle Vertices
+
+The CoordinateTriangle class is configured with the following default values:
+
+#### Front Shoot Area Triangle
+```java
+public double x1 = 15.5, y1 = 127.5;   // Vertex 1: (15.5, 127.5)
+public double x2 = 72, y2 = 72;        // Vertex 2: (72, 72)
+public double x3 = 128.5;              // Vertex 3: (128.5, 127.5) [uses y1]
+```
+
+**Coordinates:** Triangle(A: 15.5,127.5 | B: 72,72 | C: 128.5,127.5)
+- **Area:** ~3,075 square units
+- **Location:** Upper-center field region
+- **Power Scale:** 0.5 (SHORT_SHOT_SCALE)
+- **Purpose:** Close-range shooting zone
+
+#### Back Shoot Area Triangle
+```java
+public double x6 = 51, y6 = 15;        // Vertex 1: (51, 15)
+public double x7 = 72, y7 = 23;        // Vertex 2: (72, 23)
+public double x8 = 93;                 // Vertex 3: (93, 15) [uses y6]
+```
+
+**Coordinates:** Triangle(A: 51,15 | B: 72,23 | C: 93,15)
+- **Area:** ~168 square units
+- **Location:** Bottom-center field region
+- **Power Scale:** 1.0 (FULL_SHOT_SCALE)
+- **Purpose:** Long-range shooting zone
+
 ## Mathematical Foundation
 
 ### Problem Statement
