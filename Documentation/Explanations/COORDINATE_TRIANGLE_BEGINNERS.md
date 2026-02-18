@@ -10,6 +10,56 @@ The tricky part: The robot's position can have decimal numbers (like 72.12345678
 
 Instead of checking every point, we use a clever math trick called the **"Area Method."**
 
+### Default Triangle Values in Your Code
+
+Your `CoordinateTriangle` class has two shooting zones configured:
+
+#### Front Shoot Area (Upper Triangle)
+
+```java
+x1 = 15.5,  y1 = 127.5   // Top-left corner
+x2 = 72,    y2 = 72      // Bottom corner (center field)
+x3 = 128.5               // Top-right corner (uses y1 = 127.5)
+```
+
+**Visual representation:**
+
+```
+         (15.5, 127.5)          (128.5, 127.5)
+                 \_______________/
+                  \             /
+                   \           /
+                    \         /
+                     \       /
+                      \     /
+                       \   /
+                        \ /
+                     (72, 72)
+```
+
+When your robot is in this zone, it shoots at **50% power** and auto-aims at the goal.
+
+#### Back Shoot Area (Lower Triangle)
+
+```java
+x6 = 51,  y6 = 15        // Bottom-left corner
+x7 = 72,  y7 = 23        // Top corner
+x8 = 93                  // Bottom-right corner (uses y6 = 15)
+```
+
+**Visual representation:**
+
+```
+                     (72, 23)
+                       /\
+                      /  \
+                     /    \
+                    /      \
+           (51, 15) ──────── (93, 15)
+```
+
+When your robot is in this zone, it shoots at **100% power** and auto-aims at the goal.
+
 ### How It Works (Simple Explanation)
 
 Think of it like this:
@@ -219,7 +269,7 @@ The rotation is **proportional** - it turns smoothly instead of jerky. If you're
 
 ## Summary
 
-The CoordinateTriangle code now:
+The `CoordinateTriangle` code now:
 1. Takes your robot's position
 2. Uses math to calculate triangle areas
 3. Compares the areas to see if the robot is inside

@@ -1,4 +1,4 @@
-# Visual Configuration Guide for Back Shoot Area
+# Visual Configuration Guide for Shooting Areas
 
 ## Understanding Your Field
 
@@ -9,28 +9,46 @@ Y
 ^
 144 ┌─────────────────────────────────┐
     │                                 │
-    │  FRONT SHOOT AREA               │
-127.5├─────────────────────────────┐   │
-    │       (15.5, 127.5)  ▲      │   │
-    │         \           /       │   │
-    │          \         /        │   │
-    │           \       /         │   │
-    │            \     /          │   │
-    │             \   /           │   │
-    │              \ /            │   │
-    │               ▼              │   │
- 72 │          (72, 72)            │   │
-    │           /   \              │   │
-    │          /     \             │   │
-    │         /       \            │   │
-    │        /         \           │   │
-    │       /           \          │   │
-    │      ▼             ▼         │   │
-    │ (128.5, 127.5) ───────────┘  │   │
-    │                              │
+    │  FRONT SHOOT AREA (Default)     │
+127.5├─(15.5,127.5)───────(128.5,127.5)┐
+    │         \           /           │
+    │          \         /            │
+    │           \       /             │
+    │            \     /              │
+    │             \   /               │
+    │              \ /                │
+    │          (72, 72)               │
+ 23 │          /   \                  │
+    │         /     \                 │
+ 15 │  (51,15)─────(93,15)            │
+    │   BACK SHOOT AREA (Default)     │
   0 └─────────────────────────────────┘
     0        72                   144 → X
 ```
+
+## Current Default Values in CoordinateTriangle.java
+
+### Front Shoot Area (Smaller Triangle Near Center)
+```java
+x1 = 15.5,  y1 = 127.5   // Top-left vertex
+x2 = 72,    y2 = 72      // Bottom vertex (center)
+x3 = 128.5               // Top-right vertex (uses y1 = 127.5 for Y)
+```
+
+**Triangle vertices:** (15.5, 127.5), (72, 72), (128.5, 127.5)
+- This creates a triangle in the upper portion of the field
+- Robot shoots at 50% power (SHORT_SHOT_SCALE = 0.5) when in this zone
+
+### Back Shoot Area (Smaller Triangle Near Bottom)
+```java
+x6 = 51,  y6 = 15        // Bottom-left vertex
+x7 = 72,  y7 = 23        // Top vertex
+x8 = 93                  // Bottom-right vertex (uses y6 = 15 for Y)
+```
+
+**Triangle vertices:** (51, 15), (72, 23), (93, 15)
+- This creates a small triangle near the bottom-center of the field
+- Robot shoots at 100% power (FULL_SHOT_SCALE = 1.0) when in this zone
 
 ## Configuring Back Shoot Area: 5 Examples
 
