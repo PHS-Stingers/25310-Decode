@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
+import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
@@ -132,8 +133,10 @@ public class Constants {
         }
     }
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(8); //mass of robot in KG
-            .forwardZeroPowerAcceleration();
+            .mass(8) //mass of robot in KG
+            .forwardZeroPowerAcceleration(-288.49743224779564)
+            .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
+            .headingPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033));
     public static class Poses { // <-- Corrected line
         public static final Pose startPose = new Pose(58.000, 10.000, Math.toRadians(90));
         public static final Pose backScorePose = new Pose(70, 20, Math.toRadians(120));
@@ -153,7 +156,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-    .xVelocity().yVelocity();
+            .xVelocity(51.661213551919296)
+            .yVelocity(46.09716220164863);
 
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
@@ -161,10 +165,10 @@ public class Constants {
             .hardwareMapName("otos")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.DEGREES)
-            .linearScalar(-0.78955125)
-            .angularScalar(0.01760375)
+            .linearScalar(-1.88)
+            .angularScalar(0.0172)
 
-            .offset(new SparkFunOTOS.Pose2D(0,-7.874,0));
+            .offset(new SparkFunOTOS.Pose2D(0,-7.874,90));
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
