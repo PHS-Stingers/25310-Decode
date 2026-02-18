@@ -136,7 +136,7 @@ public class Constants {
             .mass(8) //mass of robot in KG
             .forwardZeroPowerAcceleration(-288.49743224779564)
             .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
-            .headingPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033));
+            .headingPIDFCoefficients(new PIDFCoefficients(0, 0, 0, .01));
     public static class Poses { // <-- Corrected line
         public static final Pose startPose = new Pose(58.000, 10.000, Math.toRadians(90));
         public static final Pose backScorePose = new Pose(70, 20, Math.toRadians(120));
