@@ -132,7 +132,8 @@ public class Constants {
         }
     }
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(5); //mass of robot in KG
+            .mass(8); //mass of robot in KG
+            .forwardZeroPowerAcceleration();
     public static class Poses { // <-- Corrected line
         public static final Pose startPose = new Pose(58.000, 10.000, Math.toRadians(90));
         public static final Pose backScorePose = new Pose(70, 20, Math.toRadians(120));
@@ -151,7 +152,8 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE)
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+    .xVelocity().yVelocity();
 
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
@@ -159,12 +161,17 @@ public class Constants {
             .hardwareMapName("otos")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.DEGREES)
-            .offset(new SparkFunOTOS.Pose2D(0,-170,90));
+            .linearScalar(-0.78955125)
+            .angularScalar(0.01760375)
+
+            .offset(new SparkFunOTOS.Pose2D(0,-7.874,0));
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
                 .OTOSLocalizer(localizerConstants)
                 .mecanumDrivetrain(driveConstants)
+
+
                 /* other builder steps */
                 .build();
 
