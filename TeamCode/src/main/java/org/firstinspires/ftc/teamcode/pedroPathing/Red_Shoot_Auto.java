@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Autonomous(name = "Minimal Auto", group = "Competition")
-public class Decode_Minimal_Shoot_Auto extends LinearOpMode {
+public class Red_Shoot_Auto extends LinearOpMode {
 
     // Declare drive motor objects
     public DcMotorEx frontLeft;
@@ -80,7 +80,11 @@ driveDistance(91.5);
         intake.setPower(0);
         driveDistance(-91.5);
 strafeDistance(-104);
-
+        gate.setPosition(150);
+        intake.setPower(1);
+        sleep(2000);
+        intake.setPower(0);
+        sleep(28000);
 
 
 
