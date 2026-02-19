@@ -133,12 +133,12 @@ public class Constants {
         }
     }
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(8) //mass of robot in KG
-            .forwardZeroPowerAcceleration(-288.49743224779564)
-            .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
-            .headingPIDFCoefficients(new PIDFCoefficients(0, 0, 0, .01));
+            .mass(8); //mass of robot in KG
+      //      .forwardZeroPowerAcceleration(-288.49743224779564)
+//            .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
+//            .headingPIDFCoefficients(new PIDFCoefficients(0, 0, 0, .01));
     public static class Poses { // <-- Corrected line
-        public static final Pose startPose = new Pose(58.000, 10.000, Math.toRadians(90));
+        public static final Pose startPose = new Pose(18.2, 119, Math.toRadians(90));
         public static final Pose backScorePose = new Pose(70, 20, Math.toRadians(120));
         public static final Pose pickup1Pose = new Pose(39,35, Math.toRadians(180));
         public static final Pose pickup2Pose = new Pose(39, 60, Math.toRadians(180));
@@ -156,8 +156,8 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(51.661213551919296)
-            .yVelocity(46.09716220164863);
+            .xVelocity(53.7588839593842274)
+            .yVelocity(36.00413405050443);
 
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);

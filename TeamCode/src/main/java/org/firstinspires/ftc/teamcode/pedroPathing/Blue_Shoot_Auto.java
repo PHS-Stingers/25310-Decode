@@ -5,10 +5,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name = "Minimal Auto", group = "Competition")
-public class Decode_Minimal_Auto extends LinearOpMode {
+public class Blue_Shoot_Auto extends LinearOpMode {
 
     // Declare drive motor objects
     public DcMotorEx frontLeft;
@@ -16,6 +17,12 @@ public class Decode_Minimal_Auto extends LinearOpMode {
     public DcMotorEx backLeft;
     public DcMotorEx backRight;
     private ElapsedTime runtime = new ElapsedTime();
+    //Added fly wheel
+    public  Servo gate;
+
+    public DcMotor intake;
+
+    private DcMotorEx flywheel;
 
     // ===== DISTANCE-TO-TIME CALIBRATION RATIOS (EDITABLE) =====
     // These values represent the time (in milliseconds) needed to travel 1 centimeter at full power
@@ -25,18 +32,25 @@ public class Decode_Minimal_Auto extends LinearOpMode {
     private static final double STRAFE_MS_PER_CM = 7.075;     // Time in ms to travel 1 cm strafe (sideways)
     private static final double ROTATE_MS_PER_DEGREE = 10.0; // Time in ms to rotate 1 degree
 
+
     @Override
     public void runOpMode() throws InterruptedException {
         frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
         frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
         backLeft = hardwareMap.get(DcMotorEx.class, "leftRear");
         backRight = hardwareMap.get(DcMotorEx.class, "rightRear");
+        intake = hardwareMap.get(DcMotor.class, "intake");
+        flywheel = hardwareMap.get(DcMotorEx.class, "output");
+        gate = hardwareMap.get(Servo.class, "gate");
 
         // Reverse the left-side motors so they spin in the correct direction
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
         backRight.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        flywheel.setDirection(DcMotorEx.Direction.REVERSE);
 
         frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -49,8 +63,30 @@ public class Decode_Minimal_Auto extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
+        flywheel.setPower(1);
 
-        driveDistance(-92);
+
+        driveDistance(-70);
+        gate.setPosition(150);
+        intake.setPower(1);
+
+        sleep(2000);
+
+        intake.setPower(0);
+        gate.setPosition(0);
+strafeDistance(-104);
+intake.setPower(1);
+driveDistance(91.5);
+        intake.setPower(0);
+        driveDistance(-91.5);
+strafeDistance(104);
+gate.setPosition(150);
+intake.setPower(1);
+sleep(2000);
+intake.setPower(0);
+sleep(28000);
+
+
 
 
     }

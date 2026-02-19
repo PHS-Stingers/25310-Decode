@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.hardware.dfrobot.HuskyLens;
+//import com.qualcomm.hardware.dfrobot.HuskyLens;
 
-import org.firstinspires.ftc.robotcore.internal.system.Deadline;
+//import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +21,9 @@ public class FreeSpinRed extends LinearOpMode {
     // ===== FLYWHEEL POWER CONSTANTS =====
     private static final double SHORT_SHOT_SCALE = 0.5;  // Scale for short shot (front area)
     private static final double FULL_SHOT_SCALE = 1.0;   // Full power for back area
+
+    // ===== SHOOTING DISTANCE CONFIGURATION =====
+    private static final double MAX_FRONT_SHOOT_DISTANCE = 152.4;  // Maximum distance robot can shoot from front zone (centimeters) - EDITABLE
 
     // ===== SHOOTING ZONE TARGET HEADING =====
     private static final double TARGET_X = 131.5;  // Red alliance target X
@@ -39,7 +42,7 @@ public class FreeSpinRed extends LinearOpMode {
 
     private final int READ_PERIOD = 1;
 
-    private HuskyLens huskyLens;
+//    private HuskyLens huskyLens;
 
     private DcMotor intake;
     private DcMotorEx flywheel;
@@ -73,17 +76,17 @@ public class FreeSpinRed extends LinearOpMode {
     @Override
     public void runOpMode() {
         // --- INITIALIZATION PHASE ---
-        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
-        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
-        rateLimit.expire();
-
-        if (!huskyLens.knock()) {
-            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
-        } else {
-            telemetry.addData(">>", "Press start to continue");
-        }
-
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+//        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
+//        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
+//        rateLimit.expire();
+//
+//        if (!huskyLens.knock()) {
+//            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+//        } else {
+//            telemetry.addData(">>", "Press start to continue");
+//        }
+//
+//        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
 
         // Initialize the MecanumDrive object. This will map and configure all drive motors.
         drive = new MecanumDrive(hardwareMap);
@@ -130,15 +133,15 @@ public class FreeSpinRed extends LinearOpMode {
         // --- TELEOP LOOP ---
         while (opModeIsActive()) {
 
-            if (!rateLimit.hasExpired()) {
-                continue;
-            }
-            rateLimit.reset();
-
-            HuskyLens.Block[] blocks = huskyLens.blocks();
-            telemetry.addData("Block count", blocks.length);
-            for (HuskyLens.Block block : blocks) {
-                telemetry.addData("Block", block.toString());
+//            if (!rateLimit.hasExpired()) {
+//                continue;
+//            }
+//            rateLimit.reset();
+//
+//            HuskyLens.Block[] blocks = huskyLens.blocks();
+//            telemetry.addData("Block count", blocks.length);
+//            for (HuskyLens.Block block : blocks) {
+//                telemetry.addData("Block", block.toString());
 
                 // --- Drive Train Control ---
                 double y = gamepad1.left_stick_y;
@@ -148,29 +151,29 @@ public class FreeSpinRed extends LinearOpMode {
                 // Call the drive method from our MecanumDrive class
                 drive.drive(y, x, rx);
 
-                // --- Align Robot based on huskylens ---
-                if (gamepad1.left_bumper) {
-                    if (block.id != 0) {
-                        if (block.x > 215) {
-                            //STRAFE LEFT until  blocks[i].x between 205 and 215
-                            drive.drive(0, -1, 0);
-                        } else if (block.x < 205) {
-                            //STRAFE RIGHT until blocks[i].x between 205 and 215
-                            drive.drive(0, 1, 0);
-                        }
-
-                    } else if (block.id == 2) {
-                        if (block.x > 215) {
-                            //STRAFE LEFT until  blocks[i].x between 205 and 215
-                            drive.drive(0, 1, 0);
-                        } else if (block.x < 205) {
-                            //STRAFE RIGHT until blocks[i].x between 205 and 215
-                            drive.drive(0, -1, 0);
-                        }
-
-                    }
-
-                }
+//                // --- Align Robot based on huskylens ---
+//                if (gamepad1.left_bumper) {
+//                    if (block.id != 0) {
+//                        if (block.x > 215) {
+//                            //STRAFE LEFT until  blocks[i].x between 205 and 215
+//                            drive.drive(0, -1, 0);
+//                        } else if (block.x < 205) {
+//                            //STRAFE RIGHT until blocks[i].x between 205 and 215
+//                            drive.drive(0, 1, 0);
+//                        }
+//
+//                    } else if (block.id == 2) {
+//                        if (block.x > 215) {
+//                            //STRAFE LEFT until  blocks[i].x between 205 and 215
+//                            drive.drive(0, 1, 0);
+//                        } else if (block.x < 205) {
+//                            //STRAFE RIGHT until blocks[i].x between 205 and 215
+//                            drive.drive(0, -1, 0);
+//                        }
+//
+//                    }
+//
+//                }
 
                 // --- Update Follower (PedroPathing)
                 follower.update();
@@ -222,12 +225,13 @@ public class FreeSpinRed extends LinearOpMode {
                 if (shootingZones.isInFrontShootArea() || shootingZones.isInBackShootArea()) {
                     double robotX = follower.getPose().getX();
                     double robotY = follower.getPose().getY();
-                    double scaledPower = calculateDistanceScaledFlywheelPower(robotX, robotY);
 
                     // Apply appropriate power based on shooting zone
                     if (shootingZones.isInFrontShootArea()) {
-                        flywheel.setPower(scaledPower * SHORT_SHOT_SCALE);
+                        double frontDistanceScaledPower = calculateFrontShootDistanceScaledPower(robotX, robotY);
+                        flywheel.setPower(frontDistanceScaledPower * SHORT_SHOT_SCALE);
                     } else {
+                        double scaledPower = calculateDistanceScaledFlywheelPower(robotX, robotY);
                         flywheel.setPower(scaledPower * FULL_SHOT_SCALE);
                     }
                 } else {
@@ -267,6 +271,44 @@ public class FreeSpinRed extends LinearOpMode {
                 telemetry.update();
             }
         }
+
+
+    /**
+     * Calculates the distance from the robot to the alliance goal and scales flywheel power accordingly for the front shoot zone.
+     * Uses MAX_FRONT_SHOOT_DISTANCE as the maximum distance reference.
+     *
+     * The scaling is a fraction: current_distance / max_distance
+     * This ensures that the closer the robot is, the lower the power, and at maximum distance, full power is applied.
+     *
+     * For Red alliance:
+     * - Target Goal: (131.5, 134.5)
+     * - Max Distance Reference: MAX_FRONT_SHOOT_DISTANCE (configurable, currently 60.0 inches)
+     *
+     * @param robotX The robot's current X coordinate
+     * @param robotY The robot's current Y coordinate
+     * @return Scaled flywheel power (0.0 to 1.0) based on distance ratio from target
+     */
+    private double calculateFrontShootDistanceScaledPower(double robotX, double robotY) {
+        // Calculate Euclidean distance from robot to target alliance goal
+        double deltaX = TARGET_X - robotX;
+        double deltaY = TARGET_Y - robotY;
+        double distanceToTarget = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+        // Use configurable maximum front shoot distance
+        double maxDistance = MAX_FRONT_SHOOT_DISTANCE;
+
+        // Avoid division by zero
+        if (maxDistance == 0) {
+            return 1.0;  // Return full power if max distance is zero
+        }
+
+        // Calculate distance ratio (current distance / maximum distance)
+        double distanceRatio = distanceToTarget / maxDistance;
+
+        // Clamp ratio between 0 and 1 to ensure valid power output
+        distanceRatio = Math.max(0.0, Math.min(1.0, distanceRatio));
+
+        return distanceRatio;
     }
 
     /**
