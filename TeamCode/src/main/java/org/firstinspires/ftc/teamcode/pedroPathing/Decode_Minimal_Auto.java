@@ -32,6 +32,8 @@ public class Decode_Minimal_Auto extends LinearOpMode {
         backLeft = hardwareMap.get(DcMotorEx.class, "leftRear");
         backRight = hardwareMap.get(DcMotorEx.class, "rightRear");
 
+
+
         // Reverse the left-side motors so they spin in the correct direction
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -49,7 +51,7 @@ public class Decode_Minimal_Auto extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-        drive(0, 1, 0);
+        drive(.5, 0, 0);
         sleep(750);
         drive(0, 0, 0);
         sleep(28250);

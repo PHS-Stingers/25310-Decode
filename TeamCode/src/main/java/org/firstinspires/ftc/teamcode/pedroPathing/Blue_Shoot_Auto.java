@@ -22,6 +22,7 @@ public class Blue_Shoot_Auto extends LinearOpMode {
 
     public DcMotor intake;
 
+    private double powerscale = 0.5;
     private DcMotorEx flywheel;
 
     // ===== DISTANCE-TO-TIME CALIBRATION RATIOS (EDITABLE) =====
@@ -108,10 +109,10 @@ sleep(28000);
         double backRightPower = (y + x - rx) / denominator;
 
         // Apply PowerScale from Constants to all motor outputs
-        frontLeft.setPower(frontLeftPower * Constants.PowerScale);
-        backLeft.setPower(backLeftPower * Constants.PowerScale);
-        frontRight.setPower(frontRightPower * Constants.PowerScale);
-        backRight.setPower(backRightPower * Constants.PowerScale);
+        frontLeft.setPower(frontLeftPower * powerscale);
+        backLeft.setPower(backLeftPower * powerscale);
+        frontRight.setPower(frontRightPower * powerscale);
+        backRight.setPower(backRightPower * powerscale);
     }
 
     /**
