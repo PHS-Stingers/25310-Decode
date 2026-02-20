@@ -49,10 +49,10 @@ public class Decode_Minimal_Auto extends LinearOpMode {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
-
-        driveDistance(-92);
-
-
+        drive(0, 1, 0);
+        sleep(750);
+        drive(0, 0, 0);
+        sleep(28250);
     }
 
     // Method to control the robot with mecanum drive inputs

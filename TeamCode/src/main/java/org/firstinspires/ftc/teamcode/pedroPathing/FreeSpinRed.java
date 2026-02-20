@@ -91,8 +91,15 @@ public class FreeSpinRed extends LinearOpMode {
         // Initialize the MecanumDrive object. This will map and configure all drive motors.
         drive = new MecanumDrive(hardwareMap);
 
+        // Set all drive motors to BRAKE zero power behavior
+        drive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         // Initialize PedroPathing follower for autonomous positioning
         follower = createFollower(hardwareMap);
+
 
         // Initialize CoordinateTriangle for shooting zone detection
         shootingZones = new CoordinateTriangle();
@@ -108,6 +115,7 @@ public class FreeSpinRed extends LinearOpMode {
 
         // Set the direction of the intake motor if needed.
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         flywheel.setDirection(DcMotorEx.Direction.REVERSE);
         // Configure flywheel motor for velocity-based control
         flywheel.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -242,6 +250,11 @@ public class FreeSpinRed extends LinearOpMode {
                 // Priority 1: D-Pad Down - Run at 100% full power
                 if (gamepad1.dpad_down) {
                     flywheel.setPower(1.0);  // Full power (100%)
+                }
+
+                // --- D-Pad Up - Update Follower Pose to (129.5, 109.5) at 0 degrees ---
+                if (gamepad1.dpad_up) {
+                    follower.setStartingPose(new com.pedropathing.geometry.Pose(129.5, 109.5, Math.toRadians(0)));
                 }
 
                 // --- Right Bumper - Reverse INTAKE ONLY (not flywheel) ---

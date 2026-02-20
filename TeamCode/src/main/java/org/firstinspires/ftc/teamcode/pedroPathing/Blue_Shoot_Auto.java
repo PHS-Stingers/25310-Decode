@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Minimal Auto", group = "Competition")
+@Autonomous(name = "Blue_Shoot_Auto", group = "Competition")
 public class Blue_Shoot_Auto extends LinearOpMode {
 
     // Declare drive motor objects

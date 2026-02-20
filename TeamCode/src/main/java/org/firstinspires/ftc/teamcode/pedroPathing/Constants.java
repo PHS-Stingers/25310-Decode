@@ -138,7 +138,13 @@ public class Constants {
 //            .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
 //            .headingPIDFCoefficients(new PIDFCoefficients(0, 0, 0, .01));
     public static class Poses { // <-- Corrected line
+        // Alliance-specific starting poses
+        public static final Pose startPoseRed = new Pose(18.2, 115.5, Math.toRadians(0));      // Red alliance: (18.2, 115.5) at 0 degrees
+        public static final Pose startPoseBlue = new Pose(125.8, 115.5, Math.toRadians(180)); // Blue alliance: (125.8, 115.5) at 180 degrees
+
+        // Legacy pose for backward compatibility
         public static final Pose startPose = new Pose(18.2, 119, Math.toRadians(90));
+
         public static final Pose backScorePose = new Pose(70, 20, Math.toRadians(120));
         public static final Pose pickup1Pose = new Pose(39,35, Math.toRadians(180));
         public static final Pose pickup2Pose = new Pose(39, 60, Math.toRadians(180));
