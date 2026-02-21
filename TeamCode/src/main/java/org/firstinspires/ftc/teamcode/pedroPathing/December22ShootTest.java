@@ -47,34 +47,36 @@ public class December22ShootTest extends LinearOpMode {
         while (opModeIsActive()) {
             // --- Drive Train Control ---
             double y = gamepad1.left_stick_y;
-            double x = gamepad1.left_stick_x;
+            //double y = gamepad1.left_trigger;
+           double x = gamepad1.left_stick_x;
+            //double x = gamepad1.right_trigger;
             double rx = gamepad1.right_stick_x;
 
             // Call the drive method from our MecanumDrive class
             drive.drive(y, x, rx);
 
             // --- Intake Control (Right Trigger) ---
-            if (gamepad1.right_trigger > 0.1) {
-                intake.setPower(1.0);
-            } else {
-                intake.setPower(0.0);
-            }
+//                if (gamepad1.dpad_down) {
+//                    intake.setPower(1.0);
+//                } else {
+//                    intake.setPower(0.0);
+//                }
 
-            // --- Flywheel Control ---
-            // Left Trigger - Run flywheel at full power
-            if (gamepad1.left_trigger > 0.1) {
-                flywheel.setPower(1.0);
-            }
-            // Right Bumper - Reverse flywheel and intake
-            else if (gamepad1.right_bumper) {
-                flywheel.setPower(-1.0);
-                intake.setPower(-1.0);
-            }
-            // D-Pad Down - Run flywheel at full power (alternative)
-            else if (gamepad1.dpad_down) {
-                flywheel.setPower(1.0);
-            }
-            // Default - Flywheel off
+                // --- Flywheel Control ---
+                // Left Trigger - Run flywheel at full power
+                if (gamepad1.left_trigger > 0.1) {
+                    flywheel.setPower(1.0);
+                }
+                // Right Bumper - Reverse flywheel and intake
+//            else if (gamepad1.right_bumper) {
+//                flywheel.setPower(-1.0);
+//                intake.setPower(-1.0);
+//            }
+//            // D-Pad Down - Run flywheel at full power (alternative)
+//            else if (gamepad1.right_trigger > 0.1) {
+//                flywheel.setPower(1.0);
+//            }
+//            // Default - Flywheel off
             else {
                 flywheel.setPower(0.0);
             }

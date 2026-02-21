@@ -11,17 +11,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "Red_Shoot_Auto", group = "Competition")
 public class Red_Shoot_Auto extends LinearOpMode {
 
-    // Declare drive motor objects
-    public DcMotorEx frontLeft;
-    public DcMotorEx frontRight;
-    public DcMotorEx backLeft;
-    public DcMotorEx backRight;
+    private MecanumDrive mecanumDrive;
     private ElapsedTime runtime = new ElapsedTime();
     //Added fly wheel
     public  Servo gate;
 
     public DcMotor intake;
-private double powerscale = 0.5;
+    private double powerscale = 1;
     private DcMotorEx flywheel;
 
     // ===== DISTANCE-TO-TIME CALIBRATION RATIOS (EDITABLE) =====
@@ -35,82 +31,48 @@ private double powerscale = 0.5;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        frontLeft = hardwareMap.get(DcMotorEx.class, "leftFront");
-        frontRight = hardwareMap.get(DcMotorEx.class, "rightFront");
-        backLeft = hardwareMap.get(DcMotorEx.class, "leftRear");
-        backRight = hardwareMap.get(DcMotorEx.class, "rightRear");
+        mecanumDrive = new MecanumDrive(hardwareMap);
         intake = hardwareMap.get(DcMotor.class, "intake");
         flywheel = hardwareMap.get(DcMotorEx.class, "output");
         gate = hardwareMap.get(Servo.class, "gate");
 
-        // Reverse the left-side motors so they spin in the correct direction
-        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        frontRight.setDirection(DcMotorSimple.Direction.FORWARD);
-        backRight.setDirection(DcMotorSimple.Direction.FORWARD);
-
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
         flywheel.setDirection(DcMotorEx.Direction.REVERSE);
 
-        frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-
-        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
         flywheel.setPower(1);
 
 
-        driveDistance(-70);
+        driveDistance(-100);
         gate.setPosition(150);
+        sleep(1000);
         intake.setPower(1);
 
-        sleep(1500);
+        sleep(2000);
 
         intake.setPower(0);
         gate.setPosition(0);
-strafeDistance(104);
-intake.setPower(1);
-driveDistance(91.5);
+        strafeDistance(120);
+        intake.setPower(1);
+        driveDistance(91.5);
+        sleep(1000);
         intake.setPower(0);
         driveDistance(-91.5);
-strafeDistance(-104);
+        strafeDistance(-120);
         gate.setPosition(150);
+        sleep(1000);
         intake.setPower(1);
         sleep(2000);
         intake.setPower(0);
         sleep(28000);
 
 
-
     }
 
     // Method to control the robot with mecanum drive inputs
     public void drive(double y, double x, double rx) {
-        // The y-stick is not inverted in this case
-        y = y;
-        // This factor can be used to counteract imperfect strafing
-        x = x * 1.1;
-        // Apply rotational power scale to rotation input
-        rx = rx * Constants.RotationalPowerScale / Constants.PowerScale;
-
-        // Calculate the power for each wheel
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (y + x + rx) / denominator;
-        double backLeftPower = (y - x + rx) / denominator;
-        double frontRightPower = (y - x - rx) / denominator;
-        double backRightPower = (y + x - rx) / denominator;
-
-        // Apply PowerScale from Constants to all motor outputs
-        frontLeft.setPower(frontLeftPower * powerscale);
-        backLeft.setPower(backLeftPower * powerscale);
-        frontRight.setPower(frontRightPower * powerscale);
-        backRight.setPower(backRightPower * powerscale);
+        mecanumDrive.drive(y, x, rx);
     }
 
     /**

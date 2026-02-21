@@ -1,25 +1,20 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
-import com.pedropathing.control.PIDFCoefficients;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.follower.FollowerConstants;
 import com.pedropathing.ftc.FollowerBuilder;
-import static org.firstinspires.ftc.teamcode.pedroPathing.Constants.createFollower;
-
+import com.pedropathing.ftc.drivetrains.MecanumConstants;
+import com.pedropathing.ftc.localization.constants.OTOSConstants;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.paths.PathConstraints;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import com.pedropathing.ftc.drivetrains.MecanumConstants;
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
-import com.pedropathing.ftc.localization.constants.OTOSConstants;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class Constants {
 
@@ -133,8 +128,8 @@ public class Constants {
         }
     }
     public static FollowerConstants followerConstants = new FollowerConstants()
-            .mass(8); //mass of robot in KG
-      //      .forwardZeroPowerAcceleration(-288.49743224779564)
+            .mass(9.4); //mass of robot in KG
+           //.forwardZeroPowerAcceleration(1);
 //            .translationalPIDFCoefficients(new PIDFCoefficients(0.037, 0, 0.05, .033))
 //            .headingPIDFCoefficients(new PIDFCoefficients(0, 0, 0, .01));
     public static class Poses { // <-- Corrected line
@@ -162,7 +157,7 @@ public class Constants {
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
             .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .xVelocity(53.7588839593842274)
+            .xVelocity(52.83157468780758)
             .yVelocity(36.00413405050443);
 
 
@@ -171,10 +166,10 @@ public class Constants {
             .hardwareMapName("otos")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.DEGREES)
-            .linearScalar(-0.6542211400815022)
-            .angularScalar(0.017345917600513026)
+            .linearScalar(-2.1610880266557864)
+            .angularScalar(0.017364276472449303)
 
-            .offset(new SparkFunOTOS.Pose2D(0,-7.874,90));
+            .offset(new SparkFunOTOS.Pose2D(0,-20.5,8.6));
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
                 .pathConstraints(pathConstraints)
