@@ -42,31 +42,33 @@ public class Blue_Shoot_Auto extends LinearOpMode {
 
 
         waitForStart();
+        sleep(12000);
         flywheel.setPower(1);
 
 
-        driveDistance(-100);
+        driveDistance(110);
         gate.setPosition(150);
-        sleep(1000);
+        sleep(4000);
         intake.setPower(1);
 
-        sleep(2000);
+        sleep(4000);
 
         intake.setPower(0);
         gate.setPosition(0);
-strafeDistance(-120);
-intake.setPower(1);
-driveDistance(91.5);
-sleep(1000);
-        intake.setPower(0);
-        driveDistance(-91.5);
-strafeDistance(120);
-gate.setPosition(150);
-sleep(1000);
-intake.setPower(1);
-sleep(2000);
-intake.setPower(0);
-sleep(28000);
+        flywheel.setPower(0);
+//        strafeDistance(-160);
+//        intake.setPower(1);
+//        driveDistance(-110);
+//        sleep(1000);
+//        intake.setPower(0);
+//        driveDistance(110);
+//        strafeDistance(160);
+//        gate.setPosition(150);
+//        sleep(1000);
+//        intake.setPower(1);
+//        sleep(2000);
+//        intake.setPower(0);
+        sleep(28000);
 
 
 

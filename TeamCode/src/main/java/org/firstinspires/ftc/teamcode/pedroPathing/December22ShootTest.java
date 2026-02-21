@@ -16,6 +16,8 @@ public class December22ShootTest extends LinearOpMode {
     private Servo gate;
     private MecanumDrive drive;
 
+    private Boolean bTog = false;
+
     @Override
     public void runOpMode() {
         // --- INITIALIZATION PHASE ---
@@ -55,12 +57,12 @@ public class December22ShootTest extends LinearOpMode {
             // Call the drive method from our MecanumDrive class
             drive.drive(y, x, rx);
 
-            // --- Intake Control (Right Trigger) ---
-//                if (gamepad1.dpad_down) {
-//                    intake.setPower(1.0);
-//                } else {
-//                    intake.setPower(0.0);
-//                }
+//             --- Intake Control (Right Trigger) ---
+                if (gamepad1.right_trigger > 0.1) {
+                    intake.setPower(1.0);
+                } else {
+                    intake.setPower(0.0);
+                }
 
                 // --- Flywheel Control ---
                 // Left Trigger - Run flywheel at full power
@@ -72,18 +74,29 @@ public class December22ShootTest extends LinearOpMode {
 //                flywheel.setPower(-1.0);
 //                intake.setPower(-1.0);
 //            }
-//            // D-Pad Down - Run flywheel at full power (alternative)
-//            else if (gamepad1.right_trigger > 0.1) {
-//                flywheel.setPower(1.0);
-//            }
-//            // Default - Flywheel off
+            // D-Pad Down - Run flywheel at full power (alternative)
+
+            // Default - Flywheel off
             else {
                 flywheel.setPower(0.0);
             }
+            // D-Pad Down - Toggle flywheel on/off
+            if (gamepad1.dpad_down && !bTog) {
+                bTog = true;
+                // Toggle the flywheel state
+                if (flywheel.getPower() == 0.0) {
+                    flywheel.setPower(1.0);
+                } else {
+                    flywheel.setPower(0.0);
+                }
+            } else if (!gamepad1.dpad_down) {
+                bTog = false;
+            }
+
 
             // --- Gate Control ---
             if (gamepad1.dpad_left) {
-                gate.setPosition(90);
+                gate.setPosition(150);
             } else if (gamepad1.dpad_right) {
                 gate.setPosition(0);
             }
